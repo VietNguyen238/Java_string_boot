@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-react
+    ports:
+      - "3000:80"
+    environment:
+      VITE_API_URL: http://backend-java2:8080/api
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-java2
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/java2
+      SPRING_DATASOURCE_USERNAME: as
+      SPRING_DATASOURCE_PASSWORD: as
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: as
+      POSTGRES_PASSWORD: as
+      POSTGRES_DB: java2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
